@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import edu.quinnipiac.ser210.videogamenewsapp.databinding.FragmentLandingBinding
 
 class LandingFragment : Fragment()
@@ -24,7 +25,8 @@ class LandingFragment : Fragment()
         val view = binding.root
 
         binding.exploreButton.setOnClickListener {
-            TODO()
+            val action = LandingFragmentDirections.actionLandingFragmentToNewsFragment()
+            view.findNavController().navigate(action)
         }
 
         return view
