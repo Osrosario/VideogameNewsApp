@@ -45,6 +45,7 @@ class DetailFragment : Fragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
+        /*
         super.onViewCreated(view, savedInstanceState)
         binding.title.text = newsList.get(article_id).title
         binding.date.text = newsList.get(article_id).date
@@ -53,5 +54,7 @@ class DetailFragment : Fragment()
         Glide.with(requireContext()).load(newsList.get(article_id).image)
             .apply(RequestOptions().centerCrop())
             .into(binding.articleImage)
+
+         */
     }
 }
