@@ -11,6 +11,31 @@
         android:id="@+id/landingFragment"
         android:name="edu.quinnipiac.ser210.videogamenewsapp.LandingFragment"
         android:label="fragment_landing"
-        tools:layout="@layout/fragment_landing" />
+        tools:layout="@layout/fragment_landing" >
+
+        <action
+            android:id="@+id/action_landingFragment_to_newsFragment"
+            app:destination="@id/newsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="edu.quinnipiac.ser210.videogamenewsapp.NewsFragment"
+        android:label="NewsFragment" >
+
+        <action
+            android:id="@+id/action_newsFragment_to_articleFragment"
+            app:destination="@id/articleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/articleFragment"
+        android:name="edu.quinnipiac.ser210.videogamenewsapp.ArticleFragment"
+        android:label="ArticleFragment" >
+
+        <argument
+            android:name="pos"
+            app:argType="integer" />
+    </fragment>
 
 </navigation>
