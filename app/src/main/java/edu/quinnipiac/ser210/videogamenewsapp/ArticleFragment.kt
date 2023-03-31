@@ -1,57 +1,39 @@
 package edu.quinnipiac.ser210.videogamenewsapp
 
 import android.os.Bundle
-import android.os.DeadObjectException
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import edu.quinnipiac.ser210.videogamenewsapp.databinding.FragmentArticleBinding
 
-class DetailFragment : Fragment()
-{
-    var article_id: Int = 0
-    private var _binding: FragmentArticleBinding? = null
-    private val binding get() = _binding !!
+class ArticleFragment : Fragment() {
+    private lateinit var binding: FragmentArticleBinding
+    private lateinit var article: NewsItem
 
-
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
-        //   recipient = arguments!!.getString("recipient")
-        val bundle = arguments
-
-        if (bundle == null)
-        {
-            Log.e("ArticleFragment", "ArticleFragment did not receive hero id")
-
-            return
-        }
-
-        article_id = ArticleFragmentArgs.fromBundle(bundle).pos
-
-    }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-    {
-        _binding = FragmentArticleBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentArticleBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
-    {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.title.text = newsList.get(article_id).title
-        binding.date.text = newsList.get(article_id).date
-        binding.description.text = newsList.get(article_id).description
-        binding.link.text = newsList.get(article_id).link
-        Glide.with(requireContext()).load(newsList.get(article_id).image)
-            .apply(RequestOptions().centerCrop())
-            .into(binding.articleImage)
+
+        // to pass news *doesn't currently work*
+        arguments?.let {
+            article = it.getParcelable("article") ?: NewsItem("", "", "", "","")
+            binding.articleTitle.text = article.title
+            binding.articleDate.text = article.date
+            Glide.with(requireContext())
+                .load(article.image)
+                .into(binding.articleImage)
+            binding.articleDescription.text = article.description
+            binding.articleLink.text = article.link
+        }
     }
 }
+
