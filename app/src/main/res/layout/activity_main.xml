@@ -25,7 +25,7 @@
         android:id="@+id/materialToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="#A675E5"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme" >
     </com.google.android.material.appbar.MaterialToolbar>

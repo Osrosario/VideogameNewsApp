@@ -23,7 +23,6 @@ class NewsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentNewsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -35,23 +34,19 @@ class NewsFragment : Fragment() {
         binding.newsRecyclerView.adapter = newsAdapter
         binding.newsRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        // Initialize Retrofit
+        // retrofit for api
         val retrofit = Retrofit.Builder()
             .baseUrl("https://videogames-news2.p.rapidapi.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        // Create the API service
         val service = retrofit.create(NewsApiService::class.java)
-
-        // Make the API call
         service.getRecentNews().enqueue(object : Callback<List<NewsItem>> {
             override fun onResponse(
                 call: Call<List<NewsItem>>,
                 response: Response<List<NewsItem>>
             ) {
                 if (response.isSuccessful) {
-                    // Update RecyclerView
                     val newsItems = response.body() ?: emptyList()
                     newsAdapter = NewsAdapter(newsItems)
                     binding.newsRecyclerView.adapter = newsAdapter
