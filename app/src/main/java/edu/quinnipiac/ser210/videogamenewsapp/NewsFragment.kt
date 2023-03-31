@@ -1,162 +1,73 @@
 package edu.quinnipiac.ser210.videogamenewsapp
 
+import NewsApiService
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.navigation.Navigation
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import edu.quinnipiac.ser210.videogamenewsapp.databinding.FragmentNewsBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
 class NewsFragment : Fragment() {
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var recyclerAdapter: RecycleAdapter
-
-    private val newsApi by lazy {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://videogames-news2.p.rapidapi.com/videogames_news/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        retrofit.create(ApiInterface::class.java)
-    }
+    private lateinit var binding: FragmentNewsBinding
+    private lateinit var newsAdapter: NewsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_news, container, false)
-
-        recyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-
-        recyclerAdapter = RecycleAdapter()
-        recyclerView.adapter = recyclerAdapter
-
-        loadNews()
-
-        return view
+    ): View {
+        // Inflate the layout for this fragment
+        binding = FragmentNewsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun loadNews() {
-        GlobalScope.launch(Dispatchers.Main) {
-            try {
-                val news = newsApi.getNews()
-                recyclerAdapter.updateNews(news)
-            } catch (e: Exception) {
-                Toast.makeText(activity, "Error loading news", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-/*
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var recyclerAdapter: RecycleAdapter
+        newsAdapter = NewsAdapter(emptyList())
+        binding.newsRecyclerView.adapter = newsAdapter
+        binding.newsRecyclerView.layoutManager = LinearLayoutManager(context)
 
-    private val ApiInterface by lazy {
+        // Initialize Retrofit
         val retrofit = Retrofit.Builder()
             .baseUrl("https://videogames-news2.p.rapidapi.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        retrofit.create(ApiInterface::class.java)
-    }
+        // Create the API service
+        val service = retrofit.create(NewsApiService::class.java)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_news, container, false)
-
-        recyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-
-        GlobalScope.launch(Dispatchers.Main) {
-            try {
-                val response = ApiInterface.getNews().execute()
+        // Make the API call
+        service.getRecentNews().enqueue(object : Callback<List<NewsItem>> {
+            override fun onResponse(
+                call: Call<List<NewsItem>>,
+                response: Response<List<NewsItem>>
+            ) {
                 if (response.isSuccessful) {
-                    val newsList = response.body() ?: emptyList()
+                    val newsTitles = response.body()?.map { it.title } ?: emptyList()
+                    newsAdapter.newsTitles = newsTitles
+                    newsAdapter.notifyDataSetChanged()
 
-                    recyclerAdapter = RecycleAdapter(newsList)
-                    recyclerView.adapter = recyclerAdapter
+                    /*
+                    // Update the UI with the received news items
+                    newsAdapter.newsItems = response.body() ?: emptyList()
+                    newsAdapter.notifyDataSetChanged()
+                     */
                 } else {
-                    Toast.makeText(
-                        activity,
-                        "Failed to fetch news",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Log.e("NewsFragment", "Failed to get news: ${response.message()}")
                 }
-            } catch (e: Exception) {
-                Toast.makeText(
-                    activity,
-                    "Failed to fetch news: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
-        }
 
-        return view
+            override fun onFailure(call: Call<List<NewsItem>>, t: Throwable) {
+                Log.e("NewsFragment", "Error getting news", t)
+            }
+        })
     }
-
-
- */
-
-    /*
-    lateinit var recyclerView: RecyclerView
-    lateinit var recyclerAdapter: RecyclerAdapter
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
-    {
-        return inflater.inflate(R.layout.fragment_news, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
-    {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.recyclerview)
-        recyclerAdapter = RecyclerAdapter(requireContext(), Navigation.findNavController(view))
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = recyclerAdapter
-
-        val apiInterface = ApiInterface.create().getNews()
-
-        if (apiInterface != null)
-        {
-            apiInterface.enqueue(object : Callback<ArrayList<Article?>?>
-            {
-                override fun onResponse(call: Call<ArrayList<Article?>?>, response: Response<ArrayList<Article?>?>)
-                {
-                    if (response.body() != null)
-                    {
-                        recyclerAdapter.setNewsListItems(response.body() !! as ArrayList<Article>)
-                    }
-                }
-
-                override fun onFailure(call: Call<ArrayList<Article?>?>, t: Throwable)
-                {
-                    if (t != null)
-                    {
-                        t.message?.let { Log.d("onFailure", it) }
-                    }
-                }
-            })
-        }
-    }
-
-     */
 }

@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import edu.quinnipiac.ser210.videogamenewsapp.databinding.FragmentArticleBinding
 
-class DetailFragment : Fragment()
+class ArticleFragment : Fragment()
 {
     var article_id: Int = 0
     private var _binding: FragmentArticleBinding? = null
