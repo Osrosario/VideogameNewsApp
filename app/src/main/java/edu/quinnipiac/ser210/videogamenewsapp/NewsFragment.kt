@@ -51,15 +51,11 @@ class NewsFragment : Fragment() {
                 response: Response<List<NewsItem>>
             ) {
                 if (response.isSuccessful) {
-                    val newsTitles = response.body()?.map { it.title } ?: emptyList()
-                    newsAdapter.newsTitles = newsTitles
-                    newsAdapter.notifyDataSetChanged()
+                    // Update RecyclerView
+                    val newsItems = response.body() ?: emptyList()
+                    newsAdapter = NewsAdapter(newsItems)
+                    binding.newsRecyclerView.adapter = newsAdapter
 
-                    /*
-                    // Update the UI with the received news items
-                    newsAdapter.newsItems = response.body() ?: emptyList()
-                    newsAdapter.notifyDataSetChanged()
-                     */
                 } else {
                     Log.e("NewsFragment", "Failed to get news: ${response.message()}")
                 }
