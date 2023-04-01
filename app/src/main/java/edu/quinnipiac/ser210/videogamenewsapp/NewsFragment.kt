@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.quinnipiac.ser210.videogamenewsapp.databinding.FragmentNewsBinding
 import retrofit2.Call
@@ -15,9 +17,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class NewsFragment : Fragment() {
+class NewsFragment : Fragment(), NewsItemClickListener {
     private lateinit var binding: FragmentNewsBinding
     private lateinit var newsAdapter: NewsAdapter
+    private val viewModel: NewsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +33,7 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        newsAdapter = NewsAdapter(emptyList())
+        newsAdapter = NewsAdapter(emptyList(), this)
         binding.newsRecyclerView.adapter = newsAdapter
         binding.newsRecyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -48,7 +51,7 @@ class NewsFragment : Fragment() {
             ) {
                 if (response.isSuccessful) {
                     val newsItems = response.body() ?: emptyList()
-                    newsAdapter = NewsAdapter(newsItems)
+                    newsAdapter.setNewsList(newsItems)
                     binding.newsRecyclerView.adapter = newsAdapter
 
                 } else {
@@ -60,5 +63,10 @@ class NewsFragment : Fragment() {
                 Log.e("NewsFragment", "Error getting news", t)
             }
         })
+    }
+
+    override fun onItemClick(item: NewsItem) {
+        viewModel.selectedNewsItem = item
+        view?.findNavController()?.navigate(R.id.action_newsFragment_to_articleFragment)
     }
 }

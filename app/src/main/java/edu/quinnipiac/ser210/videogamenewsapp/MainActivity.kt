@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity()
         navController.graph = navController.navInflater.inflate(R.navigation.nav_graph)
 
         setSupportActionBar(findViewById(R.id.materialToolbar))
-        val config = AppBarConfiguration(navController.graph)
         findViewById<Toolbar>(R.id.materialToolbar).setupWithNavController(navController)
     }
 
