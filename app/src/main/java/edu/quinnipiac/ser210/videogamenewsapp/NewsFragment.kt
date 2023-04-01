@@ -1,72 +1,59 @@
 package edu.quinnipiac.ser210.videogamenewsapp
 
-import NewsApiService
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import edu.quinnipiac.ser210.videogamenewsapp.databinding.FragmentNewsBinding
+import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class NewsFragment : Fragment(), NewsItemClickListener {
-    private lateinit var binding: FragmentNewsBinding
-    private lateinit var newsAdapter: NewsAdapter
-    private val viewModel: NewsViewModel by activityViewModels()
+class NewsFragment : Fragment()
+{
+    lateinit var recyclerView: RecyclerView
+    lateinit var recyclerAdapter: RecyclerAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentNewsBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
+    {
+        return inflater.inflate(R.layout.fragment_news, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.recyclerview)
+        recyclerAdapter = RecyclerAdapter(requireContext(), Navigation.findNavController(view))
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = recyclerAdapter
 
-        newsAdapter = NewsAdapter(emptyList(), this)
-        binding.newsRecyclerView.adapter = newsAdapter
-        binding.newsRecyclerView.layoutManager = LinearLayoutManager(context)
+        val apiInterface = ApiInterface.create().getRecentNews()
 
-        // retrofit for api
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://videogames-news2.p.rapidapi.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(NewsApiService::class.java)
-        service.getRecentNews().enqueue(object : Callback<List<NewsItem>> {
-            override fun onResponse(
-                call: Call<List<NewsItem>>,
-                response: Response<List<NewsItem>>
-            ) {
-                if (response.isSuccessful) {
-                    val newsItems = response.body() ?: emptyList()
-                    newsAdapter.setNewsList(newsItems)
-                    binding.newsRecyclerView.adapter = newsAdapter
-
-                } else {
-                    Log.e("NewsFragment", "Failed to get news: ${response.message()}")
+        if (apiInterface != null)
+        {
+            apiInterface.enqueue(object : Callback<ArrayList<Article?>?>
+            {
+                override fun onResponse(
+                    call: Call<ArrayList<Article?>?>,
+                    response: Response<ArrayList<Article?>?>
+                ) {
+                    if (response.body() != null) {
+                        recyclerAdapter.setHerosListItems(response.body()!! as ArrayList<Article>)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<List<NewsItem>>, t: Throwable) {
-                Log.e("NewsFragment", "Error getting news", t)
-            }
-        })
-    }
-
-    override fun onItemClick(item: NewsItem) {
-        viewModel.selectedNewsItem = item
-        view?.findNavController()?.navigate(R.id.action_newsFragment_to_articleFragment)
+                override fun onFailure(call: Call<ArrayList<Article?>?>, t: Throwable)
+                {
+                    if (t != null)
+                    {
+                        t.message?.let { Log.d("onFailure", it) }
+                    }
+                }
+            })
+        }
     }
 }

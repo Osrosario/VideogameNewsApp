@@ -5,37 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/landingFragment">
-
-    <fragment
-        android:id="@+id/landingFragment"
-        android:name="edu.quinnipiac.ser210.videogamenewsapp.LandingFragment"
-        android:label="fragment_landing"
-        tools:layout="@layout/fragment_landing" >
-
-        <action
-            android:id="@+id/action_landingFragment_to_newsFragment"
-            app:destination="@id/newsFragment" />
-    </fragment>
-
+    app:startDestination="@id/newsFragment">
     <fragment
         android:id="@+id/newsFragment"
         android:name="edu.quinnipiac.ser210.videogamenewsapp.NewsFragment"
-        android:label="NewsFragment" >
-
+        android:label="Video Game News" >
         <action
             android:id="@+id/action_newsFragment_to_articleFragment"
             app:destination="@id/articleFragment" />
     </fragment>
-
     <fragment
         android:id="@+id/articleFragment"
         android:name="edu.quinnipiac.ser210.videogamenewsapp.ArticleFragment"
-        android:label="ArticleFragment" >
-
+        android:label="Video Game News" >
         <argument
             android:name="pos"
             app:argType="integer" />
     </fragment>
-
 </navigation>
