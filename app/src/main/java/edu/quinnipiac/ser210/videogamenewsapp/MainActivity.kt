@@ -21,6 +21,16 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 
+/**
+ * @author Michael Ruocco, Omar Rosario
+ * @date 4/3/2023
+ *
+ * MainActivity class that sets the functionalities throughout the entire application.
+ * Enables the toolbar to handle navigation between fragments, changes the theme of the
+ * application to dark mode, displays a pop-up describing how to use the app, and creates
+ * a "Share Link" option in the material card view in the Article Fragment.
+ */
+
 class MainActivity : AppCompatActivity()
 {
     override fun onCreate(savedInstanceState: Bundle?)
@@ -28,6 +38,9 @@ class MainActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        /**
+         * Finds the Navigation Controller and sets the toolbar to navigate between fragments.
+         **/
         val materialToolbar = findViewById<MaterialToolbar>(R.id.materialToolbar)
         setSupportActionBar(materialToolbar)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -40,8 +53,13 @@ class MainActivity : AppCompatActivity()
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
+        when (item.itemId)
+        {
+            /**
+             * Changes the theme of the app to dark mode when the "Eye" icon is pressed.
+             **/
             R.id.displayMode -> {
                 val nightModeFlags = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                     Configuration.UI_MODE_NIGHT_YES -> AppCompatDelegate.MODE_NIGHT_NO
@@ -53,6 +71,10 @@ class MainActivity : AppCompatActivity()
 
                 return true
             }
+
+            /**
+             * Displays a pop-up describing how to use the app when the "?" is pressed.
+             **/
             R.id.helpPopup -> {
                 val popupView = layoutInflater.inflate(R.layout.popup_help, null)
                 val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true)
@@ -63,6 +85,10 @@ class MainActivity : AppCompatActivity()
                     true
                 }
             }
+
+            /**
+             * Enables the user to copy the article's source link to share or search on a browser.
+             **/
             R.id.shareLink -> {
                 val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("link", findViewById<MaterialTextView>(R.id.link).text.toString() as CharSequence)
@@ -73,6 +99,7 @@ class MainActivity : AppCompatActivity()
                     "Link copied",
                     Snackbar.LENGTH_SHORT
                 )
+
                 snackbar.show()
 
                 return true
@@ -80,6 +107,7 @@ class MainActivity : AppCompatActivity()
 
             else -> return super.onOptionsItemSelected(item)
         }
+
         return true
     }
 }

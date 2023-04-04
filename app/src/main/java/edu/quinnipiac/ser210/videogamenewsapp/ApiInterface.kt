@@ -6,6 +6,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Headers
 
+/**
+ * @author Michael Ruocco, Omar Rosario
+ * @date 4/3/2023
+ *
+ * API Interface to access "Videogames NEWS" data from RapidAPI. Retrieves a random selection
+ * of video game news articles using the "recent" endpoint and stores them into an ArrayList.
+ */
 interface ApiInterface
 {
     @Headers(

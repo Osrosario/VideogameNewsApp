@@ -14,6 +14,17 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.appbar.MaterialToolbar
 
+/**
+ * @author Michael Ruocco, Omar Rosario
+ * @date 4/3/2023
+ *
+ * A Kotlin class responsible for displaying the title and image of a recent article obtained from the
+ * NewsFragment class. Utilizes the "article_item.xml" and recycle view to organize views. If a material
+ * card is pressed, it will send the index/position of article within the list of news and navigate to a
+ * fragment that displays an abstract of the article, the date and time it was published, and clickable
+ * link in addition to its image and title.
+ */
+
 var newsList : ArrayList<Article> = ArrayList()
 
 class RecyclerAdapter(val context: Context,  var navController: NavController) : RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>()

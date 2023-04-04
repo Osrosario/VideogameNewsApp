@@ -13,6 +13,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * @author Michael Ruocco, Omar Rosario
+ * @date 4/3/2023
+ *
+ * Fragment class responsible for creating a recycler view. If an ApiInterface does not exist,
+ * a error message will be displayed, otherwise, creates an ApiInterface object and extracts a list
+ * of recent video game news articles and sends it to the RecyclerAdapter.kt to display information.
+ */
+
 class NewsFragment : Fragment()
 {
     lateinit var recyclerView: RecyclerView
