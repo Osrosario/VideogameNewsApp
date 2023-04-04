@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.appbar.MaterialToolbar
 
 var newsList : ArrayList<Article> = ArrayList()
 
@@ -50,6 +52,11 @@ class RecyclerAdapter(val context: Context,  var navController: NavController) :
 
                 val action = NewsFragmentDirections.actionNewsFragmentToArticleFragment(pos)
                 navController.navigate(action)
+
+                val activity = itemView.context as AppCompatActivity
+                val toolbar = activity.findViewById<MaterialToolbar>(R.id.materialToolbar)
+                val menuItem = toolbar.menu.findItem(R.id.shareLink)
+                menuItem.isVisible = !menuItem.isVisible
 
             }
         }
