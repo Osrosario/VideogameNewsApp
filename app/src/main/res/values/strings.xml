@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Video Game News App</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="help_text">Scroll down to view recent gaming articles\n\nClick on an article to view more information about that article\n\nClick the view icon to switch between day and night mode\n\nClick the share icon to copy the articles link</string>
+    <string name="credits">App by Omar Rosario and Michael Ruocco</string>
 </resources>
